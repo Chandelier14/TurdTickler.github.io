@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turd Tickler</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #121212;
+            color: #f0f0f0;
+            padding: 20px;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #1a1a1a;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .top-bar .title {
+            font-size: 2rem;
+        }
+
+        .top-bar .buttons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .top-bar .btn {
+            padding: 10px 20px;
+            background-color: #474646;
+            border: none;
+            color: #f0f0f0;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .top-bar .btn:hover {
+            background-color: #636363;
+            transform: scale(1.05);
+        }
+
+        /* Main Content */
+        main {
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        header {
+            font-size: 4rem;
+            margin-bottom: 50px;
+            letter-spacing: 5px;
+            transition: transform 0.5s ease;
+        }
+
+        header:hover {
+            transform: scale(1.05);
+        }
+
+        #members {
+            margin-top: 50px;
+            padding: 20px;
+            background-color: #202020;
+            border-radius: 10px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        #members.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        table {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+
+        table th, table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #474646;
+        }
+
+        table th {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+        }
+
+        table td {
+            font-size: 1rem;
+        }
+
+        /* Effect for players over level 50 */
+        .high-level {
+            background-color: #333333;
+            box-shadow: 0 0 15px rgba(255, 255, 100, 0.7);
+            transition: transform 0.3s ease;
+        }
+
+        .high-level:hover {
+            transform: scale(1.05);
+        }
+
+        /* Stronger effect for players over level 100 */
+        .top-level {
+            background-color: #444444;
+            box-shadow: 0 0 20px rgba(255, 100, 100, 0.9);
+            font-size: 1.2rem;
+            transition: transform 0.3s ease, font-size 0.3s ease;
+        }
+
+        .top-level:hover {
+            transform: scale(1.1);
+        }
+
+        .footer {
+            margin-top: 100px;
+            font-size: 0.9rem;
+            color: #757575;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="title">Turd Tickler</div>
+        <div class="buttons">
+            <button class="btn" onclick="openDiscord()">Discord</button>
+            <button class="btn" onclick="openAlliance()">Alliance</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        <header>Turd Tickler</header>
+        <div id="members">
+            <h2>Members</h2>
+            <table id="members-table">
+                <tr>
+                    <th>Level</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                </tr>
+                <!-- Rows will be dynamically inserted here -->
+            </table>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div class="footer">Turd Tickler Website © 2024</div>
+
+    <script>
+        // Function to fetch and load data from JSON
+        async function loadMemberData() {
+            try {
+                const response = await fetch('data.json');
+                const data = await response.json();
+                const membersTable = document.getElementById('members-table');
+
+                data.members.forEach(member => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${member.level}</td>
+                        <td>${member.name}</td>
+                        <td>${member.role}</td>
+                    `;
+                    
+                    // Add effects based on level
+                    if (member.level > 100) {
+                        row.classList.add('top-level');
+                    } else if (member.level > 50) {
+                        row.classList.add('high-level');
+                    }
+
+                    membersTable.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error fetching member data:', error);
+            }
+        }
+
+        // Example function to open links (add your own URLs)
+        function openDiscord() {
+            window.location.href = "https://discord.com";
+        }
+
+        function openAlliance() {
+            window.location.href = "#";
+        }
+
+        // Load members on page load
+        window.onload = function() {
+            document.getElementById("members").classList.add("show");
+            loadMemberData();  // Fetch the data and populate table
+        };
+    </script>
+
+</body>
+</html>
