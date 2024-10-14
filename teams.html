@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turd Tickler</title> 
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #121212;
+            color: #f0f0f0;
+            padding: 20px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #1a1a1a;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .top-bar .title {
+            font-size: 2rem;
+        }
+
+        .top-bar .title a {
+            text-decoration: none;
+            color: inherit;
+            transition: color 0.3s ease;
+        }
+
+        .top-bar .title a:hover {
+            color: #ff9900;
+        }
+
+        .top-bar .buttons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .top-bar .btn {
+            padding: 10px 20px;
+            background-color: #474646;
+            border: none;
+            color: #f0f0f0;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            text-decoration: none; /* Added to remove underline */
+        }
+
+        .top-bar .btn:hover {
+            background-color: #636363;
+            transform: scale(1.05);
+        }
+
+        main {
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        header {
+            font-size: 4rem;
+            margin-bottom: 50px;
+            letter-spacing: 5px;
+            transition: transform 0.5s ease;
+        }
+
+        header:hover {
+            transform: scale(1.05);
+        }
+
+        #teams {
+            margin-top: 50px;
+            padding: 20px;
+            background-color: #202020;
+            border-radius: 10px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        #teams.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .team-card {
+            background-color: #2a2a2a;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            padding: 20px;
+            text-align: left;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .team-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .team-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .team-stats {
+            font-size: 1rem;
+        }
+
+        .members-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .members-table th {
+            text-align: left;
+            padding: 10px;
+            background-color: #333333;
+        }
+
+        .members-table td {
+            padding: 10px;
+            border-top: 1px solid #444444;
+        }
+
+        .member-row {
+            transition: background-color 0.3s ease;
+        }
+
+        .member-row:hover {
+            background-color: #3a3a3a;
+        }
+
+        .member-name {
+            font-weight: bold;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .member-name:hover {
+            transform: scale(1.05);
+            color: #ff9900;
+        }
+
+        .footer {
+            margin-top: 100px;
+            font-size: 0.9rem;
+            color: #757575;
+        }
+
+        .high-level {
+            background-color: #333333;
+            box-shadow: 0 0 15px rgba(255, 255, 100, 0.7);
+            transition: transform 0.3s ease;
+        }
+
+        .high-level:hover {
+            transform: scale(1.05);
+        }
+
+        .top-level {
+            background-color: #444444;
+            box-shadow: 0 0 20px rgba(255, 100, 100, 0.9);
+            font-size: 1.2rem;
+            transition: transform 0.3s ease, font-size 0.3s ease;
+        }
+
+        .top-level:hover {
+            transform: scale(1.1);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div class="title"><a href="index.html">Turd Tickler</a></div>
+        <div class="buttons">
+            <a class="btn" href="index.html">Home</a> <!-- Button link with no underline -->
+            <button class="btn" onclick="openDiscord()">Discord</button>
+            <a class="btn" href="alliance.html">Alliance</a>
+            <a class="btn" href="teams.html">Teams</a> <!-- Button link with no underline -->
+        </div>
+    </div>
+
+    <main>
+        <header>Turd Tickler</header>
+        <div id="teams">
+            <h2>Teams Leaderboard</h2>
+            <div id="teams-container">
+                <!-- Team cards will be dynamically inserted here -->
+            </div>
+        </div>
+    </main>
+
+    <div class="footer">Turd Tickler Website © 2024</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+    
+    <script>
+        async function loadTeamsData() {
+            try {
+                const response = await fetch('teams.yaml');
+                const text = await response.text();
+                const data = jsyaml.load(text); // Parse YAML data
+                displayTeams(data);
+            } catch (error) {
+                console.error('Error fetching teams data:', error);
+            }
+        }
+
+        function displayTeams(data) {
+            const teamsContainer = document.getElementById('teams-container');
+            teamsContainer.innerHTML = '';
+
+            data.teams.forEach(team => {
+                const teamCard = document.createElement('div');
+                teamCard.className = 'team-card';
+
+                teamCard.innerHTML = `
+                    <div class="team-header">
+                        <span class="team-name">${team.teamName}</span>
+                        <span class="team-stats">Wins: <span style="color: green;">${team.wins}</span> | Losses: <span style="color: red;">${team.losses}</span></span>
+                    </div>
+                    <table class="members-table">
+                        <thead>
+                            <tr>
+                                <th>Level</th>
+                                <th>Name</th>
+                                <th>Role</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${team.members.map(member => {
+                                let memberClass = '';
+                                if (member.level > 100) {
+                                    memberClass = 'top-level';
+                                } else if (member.level > 50) {
+                                    memberClass = 'high-level';
+                                }
+
+                                return `
+                                    <tr class="member-row ${memberClass}">
+                                        <td>${member.level}</td>
+                                        <td><span class="member-name">${member.username}</span></td>
+                                        <td>${member.role}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                `;
+
+                teamsContainer.appendChild(teamCard);
+            });
+        }
+
+        function openDiscord() {
+            window.location.href = "https://discord.gg/CE5VxddskV";
+        }
+
+        function openAlliance() {
+            window.location.href = "#";
+        }
+
+        window.onload = function() {
+            document.getElementById("teams").classList.add("show");
+            loadTeamsData();  // Load teams data from YAML
+        };
+    </script>
+
+</body>
+</html>

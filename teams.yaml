@@ -1,0 +1,34 @@
+teams:
+  - teamName: Champions United
+    wins: 6
+    losses: 1
+    members:
+      - level: 120
+        username: Emily
+        role: Leader
+      - level: 115
+        username: David
+        role: Member
+  - teamName: Warriors Squad
+    wins: 5
+    losses: 2
+    members:
+      - level: 110
+        username: Alice
+        role: Leader
+      - level: 107
+        username: Bob
+        role: Member
+      - level: 102
+        username: Charlie
+        role: Member
+  - teamName: The Aces
+    wins: 3
+    losses: 4
+    members:
+      - level: 95
+        username: Sophie
+        role: Leader
+      - level: 90
+        username: Jake
+        role: Member
